@@ -42,3 +42,6 @@ doc/_build
 *.exe
 *.out
 *.app
+
+# UI
+src/colmap/ui/resources_rc.py
