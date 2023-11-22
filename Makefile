@@ -1,7 +1,5 @@
 SHELL := /bin/bash
 
-IMAGE_NAME := project-m-image
-CONTAINER_NAME := project-m
 CUDA_ARCHITECTURES := "75"
 DATA_PATH := $(shell pwd)/data
 
@@ -25,7 +23,7 @@ build-docker: ## Build docker image. Use CUDA_ARCHITECTURES to specify the CUDA 
 	@docker build -t="colmap:latest" --build-arg CUDA_ARCHITECTURES=${CUDA_ARCHITECTURES} ./
 
 .PHONY: run-gui
-run-gui: build-docker ## Run docker image with GUI support
+run-gui: build-docker ## Run docker image with GUI support. Use DATA_PATH to specify the path to the data folder.
 	$(call echo_green,"Running docker image with GUI support...")
 	@docker run \
 		-e QT_XCB_GL_INTEGRATION=xcb_egl \
@@ -39,7 +37,7 @@ run-gui: build-docker ## Run docker image with GUI support
 		colmap gui
 
 .PHONY: run
-run: build-docker ## Run docker image
+run: build-docker ## Run docker image. Use DATA_PATH to specify the path to the data folder.
 	$(call echo_green,"Running docker image...")
 	@docker run \
 		-v ${DATA_PATH}:/data \
