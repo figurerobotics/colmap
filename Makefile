@@ -30,7 +30,8 @@ run-gui: build-docker ## Run docker image with GUI support. Use DATA_PATH to spe
 		-e DISPLAY \
 		-e XAUTHORITY \
 		-v /tmp/.X11-unix:/tmp/.X11-unix \
-		-v ${DATA_PATH}:/data \
+		-v $(shell pwd):/workspace/colmap \
+		-w /workspace/colmap \
 		--gpus all \
 		--privileged \
 		-it colmap:latest \
@@ -40,7 +41,6 @@ run-gui: build-docker ## Run docker image with GUI support. Use DATA_PATH to spe
 run: build-docker ## Run docker image. Use DATA_PATH to specify the path to the data folder.
 	$(call echo_green,"Running docker image...")
 	@docker run \
-		-v ${DATA_PATH}:/data \
 		--gpus all \
 		-w /workspace/colmap \
 		-v $(shell pwd):/workspace/colmap \
