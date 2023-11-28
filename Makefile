@@ -35,11 +35,12 @@ run-gui: build-docker ## Run docker image with GUI support. PWD will be mounted 
 		-v /tmp/.X11-unix:/tmp/.X11-unix \
 		-v $(shell pwd):/workspace/colmap \
 		-w /workspace/colmap \
+		--rm \
 		-it colmap:latest \
 		colmap gui
 
-.PHONY: run
-run: build-docker ## Run docker image. PWD will be mounted to /workspace/colmap and /data to /data.
+.PHONY: run-term
+run-term: build-docker ## Run docker image with terminal. PWD will be mounted to /workspace/colmap and /data to /data.
 	$(call echo_green,"Running docker image...")
 	@docker run \
 		--gpus all \
@@ -48,4 +49,20 @@ run: build-docker ## Run docker image. PWD will be mounted to /workspace/colmap 
 		-v /data:/data \
 		-v $(shell pwd):/workspace/colmap \
 		-w /workspace/colmap \
-		-it colmap:latest
+		--rm \
+		-it colmap:latest \
+		bash
+
+.PHONY: run
+run: build-docker ## Run colmap command in docker image. PWD will be mounted to /workspace/colmap and /data to /data.
+	$(call echo_green,"Running docker image...")
+	@docker run \
+		--gpus all \
+		--mount source=colmap-bashhistory,target=/commandhistory,type=volume \
+		--privileged \
+		-v /data:/data \
+		-v $(shell pwd):/workspace/colmap \
+		-w /workspace/colmap \
+		--rm \
+		colmap:latest \
+		colmap ${ARGS}
