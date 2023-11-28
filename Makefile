@@ -25,14 +25,16 @@ build-docker: ## Build docker image. Use CUDA_ARCHITECTURES to specify the CUDA 
 run-gui: build-docker ## Run docker image with GUI support. PWD will be mounted to /workspace/colmap.
 	$(call echo_green,"Running docker image with GUI support...")
 	@docker run \
-		-e QT_XCB_GL_INTEGRATION=xcb_egl \
+		--gpus all \
+		--mount source=colmap-bashhistory,target=/commandhistory,type=volume \
+		--privileged \
 		-e DISPLAY \
+		-e QT_XCB_GL_INTEGRATION=xcb_egl \
 		-e XAUTHORITY \
+		-v /data:/data \
 		-v /tmp/.X11-unix:/tmp/.X11-unix \
 		-v $(shell pwd):/workspace/colmap \
 		-w /workspace/colmap \
-		--gpus all \
-		--privileged \
 		-it colmap:latest \
 		colmap gui
 
@@ -41,7 +43,9 @@ run: build-docker ## Run docker image. PWD will be mounted to /workspace/colmap.
 	$(call echo_green,"Running docker image...")
 	@docker run \
 		--gpus all \
-		-w /workspace/colmap \
-		-v $(shell pwd):/workspace/colmap \
+		--mount source=colmap-bashhistory,target=/commandhistory,type=volume \
 		--privileged \
-		-it colmap:latest \
+		-v /data:/data \
+		-v $(shell pwd):/workspace/colmap \
+		-w /workspace/colmap \
+		-it colmap:latest
