@@ -22,7 +22,7 @@ build-docker: ## Build docker image. Use CUDA_ARCHITECTURES to specify the CUDA 
 	@docker build -t="colmap:latest" --build-arg CUDA_ARCHITECTURES=${CUDA_ARCHITECTURES} ./
 
 .PHONY: run-gui
-run-gui: build-docker ## Run docker image with GUI support. PWD will be mounted to /workspace/colmap.
+run-gui: build-docker ## Run docker image with GUI support. PWD will be mounted to /workspace/colmap and /data to /data.
 	$(call echo_green,"Running docker image with GUI support...")
 	@docker run \
 		--gpus all \
@@ -39,7 +39,7 @@ run-gui: build-docker ## Run docker image with GUI support. PWD will be mounted 
 		colmap gui
 
 .PHONY: run
-run: build-docker ## Run docker image. PWD will be mounted to /workspace/colmap.
+run: build-docker ## Run docker image. PWD will be mounted to /workspace/colmap and /data to /data.
 	$(call echo_green,"Running docker image...")
 	@docker run \
 		--gpus all \
